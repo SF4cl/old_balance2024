@@ -1,0 +1,71 @@
+/**
+ * @Author       : Specific_Cola specificcola@proton.me
+ * @Date         : 2024-03-22 23:03:00
+ * @LastEditors  : H0pefu12 573341043@qq.com
+ * @LastEditTime : 2024-04-08 13:42:10
+ * @Description  :
+ * @Filename     : bsp_delay.c
+ * @Copyright (c) 2024 by IRobot, All Rights Reserved.
+ * @
+ */
+#include "bsp_delay.h"
+
+#include "main.h"
+
+static uint8_t fac_us;
+static uint32_t fac_ms;
+
+void delayInit(void) {
+    fac_us = SystemCoreClock / 1000000;
+    fac_ms = SystemCoreClock / 1000;
+}
+
+void delayUs(uint32_t nus) {
+    uint32_t ticks = 0;
+    uint32_t told = 0;
+    uint32_t tnow = 0;
+    uint32_t tcnt = 0;
+    uint32_t reload = 0;
+    reload = SysTick->LOAD;
+    ticks = nus * fac_us;
+    told = SysTick->VAL;
+    while (1) {
+        tnow = SysTick->VAL;
+        if (tnow != told) {
+            if (tnow < told) {
+                tcnt += told - tnow;
+            } else {
+                tcnt += reload - tnow + told;
+            }
+            told = tnow;
+            if (tcnt >= ticks) {
+                break;
+            }
+        }
+    }
+}
+
+void delayMs(uint16_t nms) {
+    uint32_t ticks = 0;
+    uint32_t told = 0;
+    uint32_t tnow = 0;
+    uint32_t tcnt = 0;
+    uint32_t reload = 0;
+    reload = SysTick->LOAD;
+    ticks = nms * fac_ms;
+    told = SysTick->VAL;
+    while (1) {
+        tnow = SysTick->VAL;
+        if (tnow != told) {
+            if (tnow < told) {
+                tcnt += told - tnow;
+            } else {
+                tcnt += reload - tnow + told;
+            }
+            told = tnow;
+            if (tcnt >= ticks) {
+                break;
+            }
+        }
+    }
+}
