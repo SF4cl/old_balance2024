@@ -46,6 +46,10 @@ void chassisLtask(void)
 
     if (chassis_move.start_flag == 1)
     {
+			LFMotor_T(0.0f);
+			osDelay(1);
+			LBMotor_T(0.0f);
+			
 			//HT04电机 力矩大于零角度反馈值增大
 //                   canSend_comd(LFmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -62,6 +66,10 @@ void chassisLtask(void)
     }
     else if (chassis_move.start_flag == 0)
     {
+			
+			LFMotor_T(0.0f);
+			osDelay(1);
+			LBMotor_T(0.0f);
       // canSend_comd(LFmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
       // canSend_comd(LBmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
