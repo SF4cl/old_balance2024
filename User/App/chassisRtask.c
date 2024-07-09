@@ -48,6 +48,10 @@ float pitch_gyro_r_filter_para[1] = {0.01};
 float crtR = 35.0f;
 float Rtest = 0.0f;
 
+//测试电机用
+int flag_t = 0;
+int test = 0;
+
 void chassisRtask(void)
 {
 
@@ -91,6 +95,10 @@ void chassisRtask(void)
     else if (chassis_move.start_flag == 0)
     {
 			//test
+			if(flag_t == 1){
+					joint_motor_set_mode(test);
+					flag_t = 0;
+			}
 			
 			RFMotor_T(0.0f);
 			osDelay(1);
