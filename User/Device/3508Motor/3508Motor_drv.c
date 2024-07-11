@@ -10,10 +10,10 @@ feet_motor_measure_t YawMotorMeasure;
 void FEET_CONTROL(int16_t FEET_MOTOR_LEFT, int16_t FEET_MOTOR_RIGHT)
 {
 		
-    MotorSendBuffer[(FEET_MOTOR1_TRANSMIT_ID - 0x281)*2 ]               =   FEET_MOTOR_LEFT >> 8;
-    MotorSendBuffer[(FEET_MOTOR1_TRANSMIT_ID - 0x281)*2 + 1]        		    =   FEET_MOTOR_LEFT;
-    MotorSendBuffer[(FEET_MOTOR2_TRANSMIT_ID - 0x281)*2]             =   FEET_MOTOR_RIGHT >> 8;
-    MotorSendBuffer[(FEET_MOTOR2_TRANSMIT_ID - 0x281)*2 + 1]        		    =   FEET_MOTOR_RIGHT;
+    MotorSendBuffer[0] = FEET_MOTOR_LEFT >> 8;
+    MotorSendBuffer[1] = FEET_MOTOR_LEFT;
+    MotorSendBuffer[2] = FEET_MOTOR_RIGHT >> 8;
+    MotorSendBuffer[3] = FEET_MOTOR_RIGHT;
   
 
     can_tx_message.Identifier=0x200;                           //32λID

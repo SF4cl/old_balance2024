@@ -90,7 +90,7 @@ void chassisRtask(void)
       // wheel_Rctrl(0.0f);
       					//wheel_Rtest(Rtest);
 
-      osDelay(2);
+      osDelay(1);
     }
     else if (chassis_move.start_flag == 0)
     {
@@ -101,16 +101,17 @@ void chassisRtask(void)
 			}
 			
 			RFMotor_T(0.0f);
-			osDelay(1);
-			RBMotor_T(0.0f);
 			
+			osDelay(1);
+			
+			RBMotor_T(0.0f);
       // canSend_comd(RFmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
       // canSend_comd(RBmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
       // wheel_Rctrl(0.0f);
 
-      osDelay(2);
+      osDelay(1);
     }
   }
 }
@@ -141,11 +142,11 @@ void chassisR_update(chassis_t *chassis, vmc_t *vmc, INS_t *ins)
   chassis->joint_motor[2].para.vel = RBMotor_Recv.W/9.1f;
 
 //！需根据实际修改得到模型中的phi1和phi4
-  vmc->phi4 = chassis->joint_motor[3].para.pos - 0.3925f + 0.0233f;
-  vmc->phi1 = chassis->joint_motor[2].para.pos + pi + 0.3925f + 0.0233f;
+  vmc->phi4 = -chassis->joint_motor[3].para.pos + pi/2 + 0.3416f;
+  vmc->phi1 = -chassis->joint_motor[2].para.pos + pi/2 + 0.5318f;
 
-  vmc->d_phi4 = chassis->joint_motor[3].para.vel;
-  vmc->d_phi1 = chassis->joint_motor[2].para.vel;
+  vmc->d_phi4 = -chassis->joint_motor[3].para.vel;
+  vmc->d_phi1 = -chassis->joint_motor[2].para.vel;
 
   chassis->pitchR = -ins->Pitch + 0.021f; //修正pitch值
   chassis->pitchGyroR = -ins->Gyro[1];

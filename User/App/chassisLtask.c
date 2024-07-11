@@ -62,7 +62,7 @@ void chassisLtask(void)
       						// wheel_Lctrl(0.0f);
       //					wheel_Lctrl(0.05f);
 //      					wheel_Lctrl(Ltest);
-      osDelay(2);
+      osDelay(1);
     }
     else if (chassis_move.start_flag == 0)
     {
@@ -75,7 +75,7 @@ void chassisLtask(void)
       // canSend_comd(LBmotor, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
       // wheel_Lctrl(0.0f);
-      osDelay(2);
+      osDelay(1);
     }
   }
 }
@@ -104,13 +104,16 @@ void chassisL_update(chassis_t *chassis, vmc_t *vmc, INS_t *ins)
   chassis->joint_motor[0].para.vel = LFMotor_Recv.W/9.1f;
   chassis->joint_motor[1].para.pos = LBMotor_Recv.Pos/9.1f;
   chassis->joint_motor[1].para.vel = LBMotor_Recv.W/9.1f;
+	
+	chassis->wheel_motor[0].para.speed = LeftFootMotorMeasure.speed_rpm;
+	chassis->wheel_motor[1].para.speed = RightFootMotorMeasure.speed_rpm;
 
 //！需根据实际修改得到模型中的phi1和phi4
-  vmc->phi4 = -chassis->joint_motor[0].para.pos + pi / 2.0f - 1.9823f;
-  vmc->phi1 = -chassis->joint_motor[1].para.pos + pi / 2.0f + 1.9823f;
+  vmc->phi4 = chassis->joint_motor[0].para.pos + pi/2 - 0.4114f;
+  vmc->phi1 = chassis->joint_motor[1].para.pos + pi/2 - 0.5338f;
 
-  vmc->d_phi1 = -chassis->joint_motor[1].para.vel;
-  vmc->d_phi4 = -chassis->joint_motor[0].para.vel;
+  vmc->d_phi1 = chassis->joint_motor[1].para.vel;
+  vmc->d_phi4 = chassis->joint_motor[0].para.vel;
 
   chassis->pitchL = -ins->Pitch + 0.021f; //修正pitch值
   chassis->pitchGyroL = -ins->Gyro[1];

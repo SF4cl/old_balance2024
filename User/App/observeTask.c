@@ -47,10 +47,10 @@ void observeTask(void)
     first_order_filter_init(&wheel_l_speed_filter, 0.002, wheel_l_speed_filter_para);
     while (1)
     {
-        // first_order_filter_cali(&wheel_r_speed_filter, chassis_move.wheel_motor[1].para.speed);
-        // first_order_filter_cali(&wheel_l_speed_filter, chassis_move.wheel_motor[0].para.speed);
+         first_order_filter_cali(&wheel_r_speed_filter, chassis_move.wheel_motor[1].para.speed);
+         first_order_filter_cali(&wheel_l_speed_filter, chassis_move.wheel_motor[0].para.speed);
 
-        chassis_move.v = -(wheel_r_speed_filter.out / 6.33f - wheel_l_speed_filter.out / 6.33f) / 2.0f * 0.1f;
+        chassis_move.v = (wheel_r_speed_filter.out*pi/30.0f/15.0f - wheel_l_speed_filter.out*pi/30.0f/15.0f) / 2.0f * 0.1f;
         chassis_move.x = chassis_move.x + chassis_move.v * 2.0f / 1000.0f;
 
         osDelay(2);

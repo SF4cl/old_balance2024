@@ -10,9 +10,23 @@
 #include "user_lib.h"
 #include "stdio.h"
 #include "stm32h7xx_it.h"
+#include "3508Motor_drv.h"
 
 typedef struct{
-	float T_wheel;
+    uint8_t id;
+    float pos;
+    float vel;
+    float tor;
+}Jmotor_fbpara_t;
+
+typedef struct{
+    uint8_t mode;
+    Jmotor_fbpara_t para;
+}Joint_Motor_t;
+
+typedef struct{
+    float T_wheel;
+    feet_motor_measure_t para;
 }Wheel_Motor_t;
 
 typedef struct{
