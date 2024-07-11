@@ -3,9 +3,6 @@
 
 #include "fdcan.h"
 
-#define FEET_MOTOR1_TRANSMIT_ID         			  		  0x281
-#define FEET_MOTOR2_TRANSMIT_ID         			  		  0x282
-
 #define FEET_MOTOR1_RECEIVE_ID         	  						0x201
 #define FEET_MOTOR2_RECEIVE_ID         	 			 		    0x202
 
