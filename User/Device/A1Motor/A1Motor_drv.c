@@ -43,8 +43,8 @@ void LFMotor_T(double T)
 	LFMotor_Send.Pos=0;
 	LFMotor_Send.T=T;
 	modify_data(&LFMotor_Send);
-	memcpy(Usart2Type.TX_pData,(uint8_t*)&(LFMotor_Send.motor_send_data),SEND_SIZE);
 	SCB_InvalidateDCache_by_Addr((uint8_t*)&(Usart2Type.TX_pData),SEND_SIZE);	
+	memcpy(Usart2Type.TX_pData,(uint8_t*)&(LFMotor_Send.motor_send_data),SEND_SIZE);	
 	HAL_UART_Transmit_DMA(&huart2,Usart2Type.TX_pData,SEND_SIZE);      
 }
 
@@ -55,8 +55,8 @@ void LBMotor_T(double T)
 	LBMotor_Send.Pos=0;
 	LBMotor_Send.T=T;
 	modify_data(&LBMotor_Send);
-	memcpy(Usart2Type.TX_pData,(uint8_t*)&(LBMotor_Send.motor_send_data),SEND_SIZE);
 	SCB_InvalidateDCache_by_Addr((uint8_t*)&(Usart2Type.TX_pData),SEND_SIZE);
+	memcpy(Usart2Type.TX_pData,(uint8_t*)&(LBMotor_Send.motor_send_data),SEND_SIZE);
 	HAL_UART_Transmit_DMA(&huart2,Usart2Type.TX_pData,SEND_SIZE);     
 }
 
@@ -67,8 +67,8 @@ void RFMotor_T(double T)
 	RFMotor_Send.Pos=0;
 	RFMotor_Send.T=T;
 	modify_data(&RFMotor_Send);
-	memcpy(Usart3Type.TX_pData,(uint8_t*)&(RFMotor_Send.motor_send_data),SEND_SIZE);
 	SCB_InvalidateDCache_by_Addr((uint8_t*)&(Usart3Type.TX_pData),SEND_SIZE);
+	memcpy(Usart3Type.TX_pData,(uint8_t*)&(RFMotor_Send.motor_send_data),SEND_SIZE);
 	HAL_UART_Transmit_DMA(&huart3,Usart3Type.TX_pData,SEND_SIZE);                                                                                            
 }
 
@@ -79,8 +79,8 @@ void RBMotor_T(double T)
 	RBMotor_Send.Pos=0;
 	RBMotor_Send.T=T;
 	modify_data(&RBMotor_Send);
-	memcpy(Usart3Type.TX_pData,(uint8_t*)&(RBMotor_Send.motor_send_data),SEND_SIZE);
 	SCB_InvalidateDCache_by_Addr((uint8_t*)&(Usart3Type.TX_pData),SEND_SIZE);
+	memcpy(Usart3Type.TX_pData,(uint8_t*)&(RBMotor_Send.motor_send_data),SEND_SIZE);
 	HAL_UART_Transmit_DMA(&huart3,Usart3Type.TX_pData,SEND_SIZE);                                                                                            
 }
 

@@ -10,8 +10,8 @@
 #define SEND_SIZE							                                34
 
 #define RFMotor_ID 															0
-#define RBMotor_ID 															2
-#define LFMotor_ID 														    0
+#define RBMotor_ID 															1
+#define LFMotor_ID 														  0
 #define LBMotor_ID 															1
 
 typedef struct
