@@ -3,8 +3,12 @@
 #include "string.h"
 #include "chassisRtask.h"
 
+#define YAW_MOTOR_RECEIVE_ID 0x205
+#define DefaulPTZRequestAndStatusId 0x0f0
+
 FDCAN_RxHeaderTypeDef RxHeader;
 uint8_t RxData[8];
+PTZ_t PTZ;
 
 void FDCAN1_Config(void)
 {
@@ -21,8 +25,23 @@ void FDCAN1_Config(void)
   {
     Error_Handler();
   }
-
+  if (HAL_FDCAN_ConfigFilter(&hfdcan2, &sFilterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_FDCAN_ConfigFilter(&hfdcan3, &sFilterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_FDCAN_Start(&hfdcan1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_FDCAN_Start(&hfdcan2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_FDCAN_Start(&hfdcan3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -31,44 +50,71 @@ void FDCAN1_Config(void)
   {
     Error_Handler();
   }
+  if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_FDCAN_ActivateNotification(&hfdcan3, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 static float uint_to_float(int x_int, float x_min, float x_max, int bits)
 {
-    float span = x_max - x_min;
-    float offset = x_min;
-    return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
+  float span = x_max - x_min;
+  float offset = x_min;
+  return ((float)x_int) * span / ((float)((1 << bits) - 1)) + offset;
 }
 
 extern chassis_t chassis_move;
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
-   uint16_t tmp_value;
+  uint16_t tmp_value;
 
-   if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET){
-       if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK){
-           Error_Handler();
-       }
-       if(hfdcan==&hfdcan1)
-			{
-					switch(RxHeader.Identifier)
-					{
-							case FEET_MOTOR1_RECEIVE_ID:
-							{
-									get_motor_measure(&LeftFootMotorMeasure,RxData);
-									//dx_left=((float)LeftFootMotorMeasure.speed_rpm/19.2f/60.0f)*R*3.14159f*2.0f/*+l0_left*da_left*arm_cos_f32(a_left)+da_left*arm_sin_f32(a_left)-GyroCorrected[2]*R*/;
-									
-									break;
-							}
-							case FEET_MOTOR2_RECEIVE_ID:
-							{		
-									get_motor_measure(&RightFootMotorMeasure,RxData);		
-									//dx_right=-((float)RightFootMotorMeasure.speed_rpm/19.2f/60.0f)*R*3.14159f*2.0f/*+l0_right*da_right*arm_cos_f32(a_right)+da_right*arm_sin_f32(a_right)-GyroCorrected[2]*R*/;
-									
-									break;
-							}				
-					}
-				}
-   }
+  if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+  {
+    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    // can1上挂载着左右脚电机
+    if (hfdcan == &hfdcan1)
+    {
+      switch (RxHeader.Identifier)
+      {
+      case FEET_MOTOR1_RECEIVE_ID:
+      {
+        get_motor_measure(&LeftFootMotorMeasure, RxData);
+        // dx_left=((float)LeftFootMotorMeasure.speed_rpm/19.2f/60.0f)*R*3.14159f*2.0f/*+l0_left*da_left*arm_cos_f32(a_left)+da_left*arm_sin_f32(a_left)-GyroCorrected[2]*R*/
+        break;
+      }
+      case FEET_MOTOR2_RECEIVE_ID:
+      {
+        get_motor_measure(&RightFootMotorMeasure, RxData);
+        // dx_right=-((float)RightFootMotorMeasure.speed_rpm/19.2f/60.0f)*R*3.14159f*2.0f/*+l0_right*da_right*arm_cos_f32(a_right)+da_right*arm_sin_f32(a_right)-GyroCorrected[2]*R*/;
+        break;
+      }
+      }
+    }
+    // can2上挂载着yaw电机和云台通信的数据
+    else if (hfdcan == &hfdcan2)
+    {
+      switch (RxHeader.Identifier)
+      {
+      case YAW_MOTOR_RECEIVE_ID:
+      {
+        get_motor_measure(&YawMotorMeasure, RxData);
+        break;
+      }
+      case DefaulPTZRequestAndStatusId:
+      {
+        memcpy(&PTZ, RxData, sizeof(PTZ_t));
+        break;
+      }
+      }
+    }
+    // can3上挂载这电容
+  }
 }

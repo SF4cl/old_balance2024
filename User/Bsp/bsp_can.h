@@ -6,4 +6,14 @@
 
 extern void FDCAN1_Config(void);
 
+typedef __PACKED_STRUCT
+{
+    uint8_t ChassisStatueRequest;
+    int16_t FBSpeed;
+    int16_t LRSpeed;
+    int16_t Hight;
+    uint8_t PTZStatusInformation;
+}
+PTZ_t;
+
 #endif
